@@ -1,15 +1,12 @@
 import React from 'react'
-import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import { ParametriceProviders } from './hooks/text_realm'
+import { Link } from 'expo-router'
 
 const App: React.FC = (): JSX.Element => {
   return (
     <Providers>
-      <View style={styles.container}>
-        <Text>Open up App.tsx to start working on your app DNAIEL CARDONA!</Text>
-        <StatusBar style="auto" />
-      </View>
+
     </Providers>
   )
 }
@@ -26,7 +23,6 @@ const Providers: React.FC<ProvidersProps> = ({ children }): JSX.Element => {
     </React.Fragment>
   )
 }
-export default App
 
 const styles = StyleSheet.create({
   container: {
@@ -36,3 +32,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+export default App

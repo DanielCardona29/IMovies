@@ -1,5 +1,10 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+/** @format */
+
+import React, { useContext } from "react"
+import { FlatList } from "react-native"
+import Cards from "../components/cards/cards"
+import { Box, Center, Heading } from "@gluestack-ui/themed"
+import { MoviesListContext } from "../hooks/moviesList"
 
 interface MoviesProps {
   title: string
@@ -8,12 +13,23 @@ interface MoviesProps {
 }
 
 const Movies: React.FC<MoviesProps> = ({ title, year, director }) => {
+  const { moviesList } = useContext(MoviesListContext)
   return (
-        <View>
-            <Text>Title: {title}</Text>
-            <Text>Year: {year}</Text>
-            <Text>Director: {director}</Text>
-        </View>
+        <Box py="$10">
+            <Center>
+                <Heading
+                    size="xl"
+                    p="$4"
+                    pb="$3">
+                    Movies List
+                </Heading>
+            </Center>
+            <FlatList
+                data={moviesList?.results}
+                renderItem={({ item }) => <Cards item={item} />}
+                keyExtractor={(item, index) => index.toString()}
+            />
+        </Box>
   )
 }
 

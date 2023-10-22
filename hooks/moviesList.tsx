@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react"
-import MoviesList from "../clases/movies"
+import Movies from "../clases/movies"
 import { type PagintaionTypes } from "../clases/types.t"
 import { ACCESS_TOKEN } from "./utils"
 
@@ -23,7 +23,7 @@ const MoviesListProvider: React.FC<React.PropsWithChildren<unknown>> = ({ childr
 
   const getNowPlayinList = useMemo(async (): Promise<PagintaionTypes> => {
     setLoading(true)
-    const moviesList = new MoviesList(token)
+    const moviesList = new Movies(token)
     const movies = await moviesList.NowPlaying()
     setMoviesList(movies)
     setLoading(false)

@@ -3,7 +3,7 @@
 import React, { useContext } from "react"
 import { FlatList } from "react-native"
 import Cards from "../components/cards/cards"
-import { Box, Center, Heading } from "@gluestack-ui/themed"
+import { Box } from "@gluestack-ui/themed"
 import { MoviesListContext } from "../hooks/moviesList"
 
 interface MoviesProps {
@@ -16,14 +16,6 @@ const Movies: React.FC<MoviesProps> = ({ title, year, director }) => {
   const { moviesList } = useContext(MoviesListContext)
   return (
         <Box py="$10">
-            <Center>
-                <Heading
-                    size="xl"
-                    p="$4"
-                    pb="$3">
-                    Movies List
-                </Heading>
-            </Center>
             <FlatList
                 data={moviesList?.results}
                 renderItem={({ item }) => <Cards item={item} />}
@@ -33,4 +25,4 @@ const Movies: React.FC<MoviesProps> = ({ title, year, director }) => {
   )
 }
 
-export default Movies
+export default React.memo(Movies)

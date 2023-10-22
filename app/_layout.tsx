@@ -3,10 +3,12 @@
 import { Tabs } from "expo-router"
 
 import React from "react"
-import MoviesListProvider from "../hooks/moviesList"
 import { config } from "@gluestack-ui/config" // Optional if you want to use default theme
 import { GluestackUIProvider } from "@gluestack-ui/themed"
 import { Icon } from "../components/icons/icons"
+
+import MoviesDeatilsProvider from "../hooks/movieDetail"
+import MoviesListProvider from "../hooks/moviesList"
 
 export default function Layout (): JSX.Element {
   return (
@@ -34,6 +36,12 @@ const MyTabs = (): React.JSX.Element => {
                   tabBarIcon: () => <Icon icon="home"></Icon>
                 }}
             />
+            <Tabs.Screen
+                name="movie/[id]"
+                options={{
+                  href: null
+                }}
+            />
         </Tabs>
   )
 }
@@ -46,6 +54,8 @@ const MyTabs = (): React.JSX.Element => {
 
 const ProvidersWrapper = ({ children }: { children: JSX.Element }): JSX.Element => (
     <GluestackUIProvider config={config}>
-        <MoviesListProvider>{children}</MoviesListProvider>
+        <MoviesListProvider>
+            <MoviesDeatilsProvider>{children}</MoviesDeatilsProvider>
+        </MoviesListProvider>
     </GluestackUIProvider>
 )

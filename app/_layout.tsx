@@ -10,44 +10,43 @@ import { Icon } from "../components/icons/icons"
 import MoviesDeatilsProvider from "../hooks/movieDetail"
 import MoviesListProvider from "../hooks/moviesList"
 import { RealmProvider } from "@realm/react"
-import LoaclesProvider from "../hooks/locales"
 
-import { OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm"
-import { ParametriceText } from "../hooks/text_realm"
+import { ParametriceText } from "../hooks/models"
+import LocalesProvider from "../hooks/locales"
 
 export default function Layout (): JSX.Element {
   return (
-        <ProvidersWrapper>
-            <MyTabs />
-        </ProvidersWrapper>
+    <ProvidersWrapper>
+      <MyTabs />
+    </ProvidersWrapper>
   )
 }
 
 const MyTabs = (): React.JSX.Element => {
   return (
-        <Tabs>
-            <Tabs.Screen
-                redirect={true}
-                name="index"
-                options={{
-                  href: null
-                }}
-            />
+    <Tabs>
+      <Tabs.Screen
+        redirect={true}
+        name="index"
+        options={{
+          href: null
+        }}
+      />
 
-            <Tabs.Screen
-                name="movies"
-                options={{
-                  title: "Home",
-                  tabBarIcon: () => <Icon icon="home"></Icon>
-                }}
-            />
-            <Tabs.Screen
-                name="movie/[id]"
-                options={{
-                  href: null
-                }}
-            />
-        </Tabs>
+      <Tabs.Screen
+        name="movies"
+        options={{
+          title: "Home",
+          tabBarIcon: () => <Icon icon="home"></Icon>
+        }}
+      />
+      <Tabs.Screen
+        name="movie/[id]"
+        options={{
+          href: null
+        }}
+      />
+    </Tabs>
   )
 }
 
@@ -58,24 +57,13 @@ const MyTabs = (): React.JSX.Element => {
 // }
 
 const ProvidersWrapper = ({ children }: { children: JSX.Element }): JSX.Element => (
-    <GluestackUIProvider config={config}>
-        <RealmProvider
-          schema={[ParametriceText]}
-          sync={{
-            flexible: true,
-            existingRealmFileBehavior: {
-              type: OpenRealmBehaviorType.DownloadBeforeOpen,
-              timeOut: 1000,
-              timeOutBehavior:
-                // In v11 the enums are not set up correctly, so we need to use the string values
-                OpenRealmTimeOutBehavior?.OpenLocalRealm ?? 'openLocalRealm'
-            }
-          }}>
-            <LoaclesProvider>
-                <MoviesListProvider>
-                    <MoviesDeatilsProvider>{children}</MoviesDeatilsProvider>
-                </MoviesListProvider>
-            </LoaclesProvider>
-        </RealmProvider>
-    </GluestackUIProvider>
+  <GluestackUIProvider config={config}>
+    <RealmProvider schema={[ParametriceText]} deleteRealmIfMigrationNeeded={true}>
+      <LocalesProvider>
+        <MoviesListProvider>
+          <MoviesDeatilsProvider>{children}</MoviesDeatilsProvider>
+        </MoviesListProvider>
+      </LocalesProvider>
+    </RealmProvider>
+  </GluestackUIProvider>
 )

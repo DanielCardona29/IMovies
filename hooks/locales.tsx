@@ -1,30 +1,107 @@
-import React, { useEffect, useState } from 'react'
-import { ParametriceText, ParametriceUseQuery, ParametriceUseRealm } from './text_realm'
+import { useQuery, useRealm } from '@realm/react'
+import React, { useCallback, useMemo } from 'react'
+import { ParametriceText } from './models'
+import { BSON } from 'realm'
+interface localesType {
+  t: (key: string) => string
+}
+
+// This contains the bdResponse parametrice simulator
+const bdLoaces = [
+  {
+    _id: new BSON.ObjectId(),
+    identy: 'home',
+    value: 'Home',
+    language: 'en'
+  },
+  {
+    _id: new BSON.ObjectId(),
+    identy: 'home',
+    value: 'Inicio',
+    language: 'es'
+  }
+]
+
+const localesContext = React.createContext<localesType>({ t: (key: string) => key })
 
 interface localesType {
-
+  t: (key: string) => string
+  setShowDone?: (showDone: boolean) => void
 }
 
-const LoaclesContext = React.createContext<localesType>({})
+interface parametriceTextType {
+  _id: BSON.ObjectId
+  identy: string
+  value: string
+  language: string
+}
+const LocalesProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
+  const locales = useQuery(
+    ParametriceText,
+    collection => collection.sorted('language')
+  )
+  const realm = useRealm()
 
-const LoaclesProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }): JSX.Element => {
-  const [allText, setText] = useState<Realm.Results<any>>()
-
-  //   const realm = ParametriceUseRealm()
-
-  const FindFilterComponent = (): void => {
-    const texts = ParametriceUseQuery(ParametriceText)
-    setText(texts)
+  const t = (key: string): string => {
+    const locale = locales.find(({ identy }: any) => identy === key) ?? null
+    return locale !== null ? locale.value : key
   }
 
-  useEffect(() => {
-    FindFilterComponent()
+  const handleAddText = useCallback(
+    (identy: string, value: string, language: string): void => {
+      if (identy === '') {
+        return
+      }
+      realm.write(() => {
+        return realm.create(ParametriceText, {
+          value,
+          identy,
+          language
+        })
+      })
+    },
+    [realm]
+  )
 
-    console.log('allText', allText)
-  }, [])
+  const changeParametriceValue = useCallback(
+    (text: ParametriceText & Realm.Object, newValue: string): void => {
+      realm.write(() => {
+        text.value = newValue
+      })
+    },
+    [realm]
+  )
 
-  const values: localesType = {}
-  return <LoaclesContext.Provider value={values}>{children}</LoaclesContext.Provider>
+  // Write or update the parametriceText
+  const handleUpdateText = useCallback(
+    ({ _id, identy, value, language }: parametriceTextType): void => {
+      const text = realm.objectForPrimaryKey(ParametriceText, _id)
+      if (text !== null) {
+        changeParametriceValue(text, value)
+      } else {
+        handleAddText(identy, value, language)
+      }
+    },
+    [realm, changeParametriceValue, handleAddText]
+  )
+
+  useMemo(() => {
+    if (locales.length === 0) {
+      bdLoaces.forEach(({ _id, identy, value, language }) => {
+        handleUpdateText(({ _id, identy, value, language }))
+      })
+    }
+  }, [locales])
+
+  const values: localesType = {
+    t
+  }
+
+  return (
+        <localesContext.Provider value={values}>
+            {children}
+        </localesContext.Provider>
+  )
 }
 
-export default LoaclesProvider
+export default LocalesProvider

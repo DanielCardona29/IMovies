@@ -9,4 +9,6 @@ parserOptions:
   sourceType: module
 plugins:
   - react
-rules: {}
+rules: {
+  "@typescript-eslint/quotes": 'off',
+}

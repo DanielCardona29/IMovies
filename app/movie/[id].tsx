@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useMemo, useState } from "react"
-import { Box, Center, Divider, Heading, Image, ScrollView, Spinner, Text } from "@gluestack-ui/themed"
+import { Box, Center, Divider, HStack, Heading, Image, ScrollView, Spinner, Text, VStack } from "@gluestack-ui/themed"
 import { FlatList } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 import { MovieDetailsContext } from "../../hooks/movieDetail"
@@ -10,7 +10,7 @@ import { IMAGE_HOST } from "../../hooks/utils"
 
 const Movie = (): JSX.Element => {
   const [movie, setMovie] = useState<MovieType>()
-  const [error, setError] = useState<errorType>({ value: false })
+  const [error, setError] = useState<errorProp>({ value: false })
   const [loading, isLoading] = useState<boolean>(false)
   const { id } = useLocalSearchParams() ?? { id: "" }
 
@@ -51,11 +51,11 @@ const Loading = (): JSX.Element => (
     </Box>
 )
 
-interface errorType {
+interface errorProp {
   value: boolean
   error?: Error
 }
-const Error: React.FC<errorType> = ({ error }): JSX.Element => (
+const Error: React.FC<errorProp> = ({ error }): JSX.Element => (
     <Box
         alignItems="center"
         justifyContent="center"
@@ -69,25 +69,31 @@ const Error: React.FC<errorType> = ({ error }): JSX.Element => (
     </Box>
 )
 
-interface genresListType {
+interface genresListProp {
   genres: Array<{
     id: number
     name: string
   }>
 }
 
-const GenresListComponent: React.FC<genresListType> = ({ genres }): JSX.Element => (
+const GenresListComponent: React.FC<genresListProp> = ({ genres }): JSX.Element => (
     <Box
         width={"$full"}
-        p={'$7'}>
-            <Center w={"$full"}>
+        p={"$7"}>
+        <Center w={"$full"}>
             <FlatList
                 horizontal={true}
                 data={genres}
-                renderItem={({ item }) => <Text fontWeight="$bold" pr="$4">{item.name}</Text>}
+                renderItem={({ item }) => (
+                    <Text
+                        fontWeight="$bold"
+                        pr="$4">
+                        {item.name}
+                    </Text>
+                )}
                 keyExtractor={(item, index) => index.toString()}
             />
-            </Center>
+        </Center>
     </Box>
 )
 const GenresList = React.memo(GenresListComponent)
@@ -98,53 +104,104 @@ interface company {
   name: string
   origin_country: string
 }
-interface productionCompaniesType {
+interface productionCompaniesProp {
   companies?: company[]
 }
 
-const ProductionCompaniesListComponent: React.FC<productionCompaniesType> = ({ companies }): JSX.Element => {
+const ProductionCompaniesListComponent: React.FC<productionCompaniesProp> = ({ companies }): JSX.Element => {
   const Card = ({ item }: { item: company }): JSX.Element => (
         <Box p={"$3"}>
             <Center>
-            <Image
-                size="xl"
-                role="img"
-                alt="Movie poster"
-                source={{
-                  uri: IMAGE_HOST + item.logo_path
-                }}
-            />
-            <Text fontWeight="$bold">{item.name}</Text>
+                <Image
+                    size="xl"
+                    role="img"
+                    alt="Movie poster"
+                    source={{
+                      uri: IMAGE_HOST + item.logo_path
+                    }}
+                />
+                <Text fontWeight="$bold">{item.name}</Text>
             </Center>
         </Box>
   )
-  return <Box
-        width={"$full"}
-        pt={'$10'}>
+  return (
+        <Box
+            width={"$full"}
+            pt={"$10"}
+            pb={"$7"}>
             <Center w={"$full"}>
-            <FlatList
-                horizontal={true}
-                data={companies}
-                renderItem={({ item }) => <Card item={item}/>}
-                keyExtractor={(item, index) => index.toString()}
-            />
+                <FlatList
+                    horizontal={true}
+                    data={companies}
+                    renderItem={({ item }) => <Card item={item} />}
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </Center>
-    </Box>
+        </Box>
+  )
 }
 const ProductionCompaniesList = React.memo(ProductionCompaniesListComponent)
+
+interface movieProp {
+  movie?: MovieType
+}
+const GeneralInfoComponent: React.FC<movieProp> = ({ movie }): JSX.Element => (
+    <Box
+        width={"$full"}
+        pt={"$10"}
+        pb={"$7"}>
+        <Center w={"$full"}>
+            <VStack>
+                <HStack>
+                    <HStack width={"$1/2"}>
+                        <Text fontWeight="$bold">Release date: </Text>
+                        <Text>{movie?.release_date}</Text>
+                    </HStack>
+                    <HStack width={"$1/2"}>
+                        <Text fontWeight="$bold">Status: </Text>
+                        <Text>{movie?.status}</Text>
+                    </HStack>
+                </HStack>
+
+                <HStack>
+                    <HStack width={"$1/2"}>
+                        <Text fontWeight="$bold">Runtime: </Text>
+                        <Text>{movie?.runtime}</Text>
+                    </HStack>
+                    <HStack width={"$1/2"}>
+                        <Text fontWeight="$bold">Budget: </Text>
+                        <Text>{movie?.budget}</Text>
+                    </HStack>
+                </HStack>
+
+                <HStack>
+                    <HStack width={"$1/2"}>
+                        <Text fontWeight="$bold">Revenue: </Text>
+                        <Text>{movie?.revenue}</Text>
+                    </HStack>
+                    <HStack width={"$1/2"}>
+                        <Text fontWeight="$bold">Popularity: </Text>
+                        <Text>{movie?.popularity}</Text>
+                    </HStack>
+                </HStack>
+            </VStack>
+        </Center>
+    </Box>
+)
+const GeneralInfoList = React.memo(GeneralInfoComponent)
+
 interface contentTypes {
   movie?: MovieType
 }
 
 const Content: React.FC<contentTypes> = ({ movie }): JSX.Element => (
-    <ScrollView h="$full" w="$full" p={'$4'} pb={"$7"}>
-        <Center pb={'$1.5'}>
-            <Heading
-                size="xl">
-                {movie?.title}
-            </Heading>
-            <Heading
-                sub={true}>{movie?.tagline}</Heading>
+    <ScrollView
+        h="$full"
+        w="$full"
+        p={"$4"}>
+        <Center pb={"$1.5"}>
+            <Heading size="xl">{movie?.title}</Heading>
+            <Heading sub={true}>{movie?.tagline}</Heading>
         </Center>
         <Divider bgColor="$primary300" />
         <Box
@@ -162,12 +219,19 @@ const Content: React.FC<contentTypes> = ({ movie }): JSX.Element => (
             />
         </Box>
 
-        <Center><GenresList genres={movie?.genres ?? []} /></Center>
+        <Center>
+            <GenresList genres={movie?.genres ?? []} />
+        </Center>
 
         <Text>{movie?.overview}</Text>
 
-        <Center><ProductionCompaniesList companies={movie?.production_companies ?? []} /></Center>
+        <Center>
+            <ProductionCompaniesList companies={movie?.production_companies ?? []} />
+        </Center>
 
+        <Center>
+            <GeneralInfoList movie={movie} />
+        </Center>
     </ScrollView>
 )
 export default Movie

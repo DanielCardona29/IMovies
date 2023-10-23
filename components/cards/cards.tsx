@@ -13,12 +13,13 @@ interface CardsProps {
 
 const Cards: React.FC<CardsProps> = ({ item }): JSX.Element => {
   return (
+    <Center>
         <Box
             borderRadius="$lg"
-            borderWidth="$1"
             my="$4"
             overflow="hidden"
             backgroundColor="$primary100"
+            w={"$80"}
             sx={{
               "@base": {
                 mx: "$2"
@@ -50,6 +51,7 @@ const Cards: React.FC<CardsProps> = ({ item }): JSX.Element => {
                 </Text>
                 <Heading size="sm">{item.title}</Heading>
                 <Text
+                    isTruncated={true}
                     my="$1.5"
                     fontSize="$xs">
                     {item.overview}
@@ -71,6 +73,7 @@ const Cards: React.FC<CardsProps> = ({ item }): JSX.Element => {
                 </Center>
             </VStack>
         </Box>
+        </Center>
   )
 }
 

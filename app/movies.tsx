@@ -14,6 +14,7 @@ interface MoviesProps {
 
 const Movies: React.FC<MoviesProps> = ({ title, year, director }) => {
   const { moviesList } = useContext(MoviesListContext)
+
   return (
         <Box py="$10">
             <FlatList

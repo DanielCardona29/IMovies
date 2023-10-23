@@ -9,6 +9,11 @@ import { Icon } from "../components/icons/icons"
 
 import MoviesDeatilsProvider from "../hooks/movieDetail"
 import MoviesListProvider from "../hooks/moviesList"
+import { RealmProvider } from "@realm/react"
+import LoaclesProvider from "../hooks/locales"
+
+import { OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm"
+import { ParametriceText } from "../hooks/text_realm"
 
 export default function Layout (): JSX.Element {
   return (
@@ -54,8 +59,23 @@ const MyTabs = (): React.JSX.Element => {
 
 const ProvidersWrapper = ({ children }: { children: JSX.Element }): JSX.Element => (
     <GluestackUIProvider config={config}>
-        <MoviesListProvider>
-            <MoviesDeatilsProvider>{children}</MoviesDeatilsProvider>
-        </MoviesListProvider>
+        <RealmProvider
+          schema={[ParametriceText]}
+          sync={{
+            flexible: true,
+            existingRealmFileBehavior: {
+              type: OpenRealmBehaviorType.DownloadBeforeOpen,
+              timeOut: 1000,
+              timeOutBehavior:
+                // In v11 the enums are not set up correctly, so we need to use the string values
+                OpenRealmTimeOutBehavior?.OpenLocalRealm ?? 'openLocalRealm'
+            }
+          }}>
+            <LoaclesProvider>
+                <MoviesListProvider>
+                    <MoviesDeatilsProvider>{children}</MoviesDeatilsProvider>
+                </MoviesListProvider>
+            </LoaclesProvider>
+        </RealmProvider>
     </GluestackUIProvider>
 )

@@ -1,7 +1,6 @@
-import { createRealmContext } from "@realm/react"
 import Realm from "realm"
 
-class ParametriceText extends Realm.Object {
+export class ParametriceText extends Realm.Object {
   static schema = {
     name: "ParametriceText",
     properties: {
@@ -12,11 +11,3 @@ class ParametriceText extends Realm.Object {
     primaryKey: "id"
   }
 }
-
-const realmConfig = {
-  schema: [ParametriceText],
-  schemaVersion: 0
-}
-
-// create a contex
-export const { RealmProvider: ParametriceProviders, useObject: ParametriceUseObject, useQuery: ParametriceUseQuery, useRealm: ParametriceUseRealm } = createRealmContext(realmConfig)

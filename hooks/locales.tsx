@@ -2,6 +2,9 @@ import { useQuery, useRealm } from '@realm/react'
 import React, { useCallback, useMemo } from 'react'
 import { ParametriceText } from './models'
 import { BSON } from 'realm'
+
+import * as localization from 'expo-localization'
+import { API_LANG } from './utils'
 interface localesType {
   t: (key: string) => string
 }
@@ -12,17 +15,29 @@ const bdLoaces = [
     _id: new BSON.ObjectId(),
     identy: 'home',
     value: 'Home',
-    language: 'en'
+    language: API_LANG.en
   },
   {
     _id: new BSON.ObjectId(),
     identy: 'home',
     value: 'Inicio',
-    language: 'es'
+    language: API_LANG.es
+  },
+  {
+    _id: new BSON.ObjectId(),
+    identy: 'details',
+    value: 'Details',
+    language: API_LANG.es
+  },
+  {
+    _id: new BSON.ObjectId(),
+    identy: 'details',
+    value: 'Detalles',
+    language: API_LANG.en
   }
 ]
 
-const localesContext = React.createContext<localesType>({ t: (key: string) => key })
+export const localesContext = React.createContext<localesType>({ t: (key: string) => key })
 
 interface localesType {
   t: (key: string) => string
@@ -36,6 +51,7 @@ interface parametriceTextType {
   language: string
 }
 const LocalesProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
+  const lang = localization.locale.split('-')[0]
   const locales = useQuery(
     ParametriceText,
     collection => collection.sorted('language')
@@ -43,7 +59,7 @@ const LocalesProvider = ({ children }: { children: JSX.Element }): JSX.Element =
   const realm = useRealm()
 
   const t = (key: string): string => {
-    const locale = locales.find(({ identy }: any) => identy === key) ?? null
+    const locale = locales.find(({ identy, language }: any) => identy === key && (language === lang || language === API_LANG[lang])) ?? null
     return locale !== null ? locale.value : key
   }
 

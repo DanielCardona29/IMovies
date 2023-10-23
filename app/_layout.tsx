@@ -2,7 +2,7 @@
 
 import { Tabs } from "expo-router"
 
-import React from "react"
+import React, { useContext } from "react"
 import { config } from "@gluestack-ui/config" // Optional if you want to use default theme
 import { GluestackUIProvider } from "@gluestack-ui/themed"
 import { Icon } from "../components/icons/icons"
@@ -12,7 +12,7 @@ import MoviesListProvider from "../hooks/moviesList"
 import { RealmProvider } from "@realm/react"
 
 import { ParametriceText } from "../hooks/models"
-import LocalesProvider from "../hooks/locales"
+import LocalesProvider, { localesContext } from "../hooks/locales"
 
 export default function Layout (): JSX.Element {
   return (
@@ -23,6 +23,7 @@ export default function Layout (): JSX.Element {
 }
 
 const MyTabs = (): React.JSX.Element => {
+  const { t } = useContext(localesContext)
   return (
     <Tabs>
       <Tabs.Screen
@@ -36,13 +37,14 @@ const MyTabs = (): React.JSX.Element => {
       <Tabs.Screen
         name="movies"
         options={{
-          title: "Home",
+          title: t("home"),
           tabBarIcon: () => <Icon icon="home"></Icon>
         }}
       />
       <Tabs.Screen
         name="movie/[id]"
         options={{
+          title: t("details"),
           href: null
         }}
       />

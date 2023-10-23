@@ -35,7 +35,8 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-web": "~0.19.6",
-    "realm": "^12.2.1"
+    "realm": "^12.2.1",
+    "expo-localization": "~14.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",

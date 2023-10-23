@@ -10,7 +10,8 @@
       "package": "com.danicalderon3.iMovies"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-localization"
     ]
   }
 }

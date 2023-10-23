@@ -1,5 +1,7 @@
+import { API_LANG } from "../hooks/utils"
 import Api from "./api"
 import { type QueryParamsTypes, type PagintaionTypes } from "./types.t"
+import * as localization from 'expo-localization'
 
 class Movies extends Api {
   token: string
@@ -9,10 +11,12 @@ class Movies extends Api {
   }
 
   async NowPlaying (queryParams?: QueryParamsTypes): Promise<PagintaionTypes> {
+    const lang = localization.locale.split('-')[0]
+
     queryParams = {
       include_adult: false,
       include_video: false,
-      language: "en-US",
+      language: API_LANG[lang],
       page: 1,
       sort_by: "popularity.desc",
       ...queryParams
